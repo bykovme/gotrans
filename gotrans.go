@@ -16,6 +16,12 @@ type translation struct {
 
 var trans *translation
 
+// InitLocales - initiate locales from the folder
+func InitLocales(trPath string) error {
+	trans = &translation{translations: make(map[string]map[string]string)}
+	return loadTranslations(trPath)
+}
+
 // Tr - translate for current locale
 func Tr(locale string, trKey string) string {
 	trValue, ok := trans.translations[locale][trKey]
@@ -29,10 +35,18 @@ func Tr(locale string, trKey string) string {
 	return trKey
 }
 
-// InitLocales - initiate locales from the folder
-func InitLocales(trPath string) error {
-	trans = &translation{translations: make(map[string]map[string]string)}
-	return loadTranslations(trPath)
+// DetectLanguage - parse to find the most preferable language
+func DetectLanguage(acceptLanguage string) string {
+
+	langStrs := strings.Split(acceptLanguage, ",")
+	for _, langStr := range langStrs {
+		lang := strings.Split(strings.Trim(langStr, " "), ";")
+		if checkLocale(lang[0]) {
+			return lang[0]
+		}
+	}
+
+	return "en"
 }
 
 // LoadTranslations - load translations files from the folder
@@ -81,18 +95,4 @@ func checkLocale(localeName string) bool {
 		}
 	}
 	return false
-}
-
-// DetectLanguage - parse to find the most preferable language
-func DetectLanguage(acceptLanguage string) string {
-
-	langStrs := strings.Split(acceptLanguage, ",")
-	for _, langStr := range langStrs {
-		lang := strings.Split(strings.Trim(langStr, " "), ";")
-		if checkLocale(lang[0]) {
-			return lang[0]
-		}
-	}
-
-	return "en"
 }
