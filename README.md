@@ -1,7 +1,16 @@
-# gotrans
-Localization library for GO, it uses *.json files to localize your GO application
+# gotrans - localization package for golang
+Localization package for GO, it uses JSON files to localize your GO application
 
 ## Getting started
+
+### Installation
+
+Install the package with the command
+```bash
+go get github.com/bykovme/gotrans
+```
+
+### Prepare translation files
 
 JSON files should use following format:
 
@@ -12,23 +21,27 @@ JSON files should use following format:
 }
 ```
 
-JSON file name should represent standard [language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) or language-country code supported by browsers. 
+JSON file name should use standard [language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) or language-country code supported by browsers. At lease one file "en.json" should be in the localization folder.
+
+### Quick documentation  
 
 There are just 3 functions in the package
 
-### InitLocales(path string)
+#### InitLocales(path string)
 
-Use the relative path in the project to set the folder within the project where all the JSON files are located. Make sure that files have extension ".json"
+Use the relative or absolute path to set the folder where all the JSON files with translations are located. Make sure that all the files with translations have extension ".json"
 
-### Tr(lang string, key string) string
+#### Tr(lang string, key string) string
 
 Get translation value by the language & key 
 
-### DetectLanguage(acceptLanguage string) string 
+#### DetectLanguage(acceptLanguage string) string 
 
 This function will be useful when you are creating web application, it detects the language from HTTP header Accept-Language, check the usage of the function in the example below
 
 ## Example of using gotrans package
+
+The same example is located within the package [here](https://github.com/bykovme/gotrans/tree/master/example)
 
 ```go
 package main
@@ -61,4 +74,10 @@ func main() {
 }
 ```
 
-Feel free to request new features or send your pull requests.
+## Behaviour
+
+If the key is not found in the localization file, it will try to find the same key in English localization ("en.json"), if the key is not found there as well, the key will be returned instead of value.
+
+## The End
+
+
