@@ -21,7 +21,7 @@ JSON files should use following format:
 }
 ```
 
-JSON file name should use standard [language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) or language-country code supported by browsers. At lease one file "en.json" should be in the localization folder.
+JSON file name should use standard [language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) or language-country code supported by browsers. At least one file "en.json" should be in the localization folder.
 
 ### Quick documentation  
 
