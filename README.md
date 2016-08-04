@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/bykovme/gotrans.svg?branch=master)](https://travis-ci.org/bykovme/gotrans)
+
 # gotrans - localization package for golang
 Localization package for GO, it uses JSON files to localize your GO application
 
