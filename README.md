@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/bykovme/gotrans.svg?branch=master)](https://travis-ci.org/bykovme/gotrans)
 [![codecov](https://codecov.io/gh/bykovme/gotrans/branch/master/graph/badge.svg)](https://codecov.io/gh/bykovme/gotrans)
+[![Go Report Card](https://goreportcard.com/badge/github.com/bykovme/gotrans)](https://goreportcard.com/report/github.com/bykovme/gotrans)
 
 # gotrans - localization package for golang
 
