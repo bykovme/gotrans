@@ -51,13 +51,10 @@ func DetectLanguage(acceptLanguage string) string {
 
 // LoadTranslations - load translations files from the folder
 func loadTranslations(trPath string) error {
-	files, err := filepath.Glob(trPath + "/*.json")
-	if err != nil {
-		return err
-	}
+	files, _ := filepath.Glob(trPath + "/*.json")
 
 	if len(files) == 0 {
-		return errors.New("No translations found")
+		return errors.New("no translations found")
 	}
 
 	for _, file := range files {
