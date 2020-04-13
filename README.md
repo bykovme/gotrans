@@ -54,6 +54,28 @@ This function will be useful when you are creating web application, it detects t
 
 ## Example of using gotrans package
 
+Simple usage example
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/bykovme/gotrans"
+)
+
+func main() {
+	err := gotrans.InitLocales("langs")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(gotrans.Tr("en", "hello_world"))
+    fmt.Println(gotrans.Tr("ru", "hello_world"))
+}
+```
+
+More complicated usage example for dynamic usage on the webserver.
 The same example is located within the package [here](https://github.com/bykovme/gotrans/tree/master/example)
 
 ```go
@@ -100,7 +122,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
 	http.HandleFunc("/", handler)
 	_ = http.ListenAndServe(":3000", nil)
 }
@@ -110,6 +131,6 @@ func main() {
 
 If the key is not found in the localization file, it will try to find the same key in English localization ("en.json"), if the key is not found there as well, the key will be returned instead of value.
 
-## The End
+**[Alex Bykov](https://bykovsoft.com) © 2015 - 2020**
 
 
