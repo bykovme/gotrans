@@ -65,13 +65,9 @@ import (
 )
 
 func main() {
-	err := gotrans.InitLocales("langs")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(gotrans.Tr("en", "hello_world"))
-    fmt.Println(gotrans.Tr("ru", "hello_world"))
+    _ := gotrans.InitLocales("/home/user/project/languages")  //  Path to the folder with localization files
+    fmt.Println(gotrans.Tr("en", "hello_world"))  // Using english translation from the file 'en.json'
+    fmt.Println(gotrans.Tr("ru", "hello_world"))  // Using russian translation from the file 'ru.json'
 }
 ```
 
