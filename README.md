@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.org/bykovme/gotrans.svg?branch=master)](https://travis-ci.org/bykovme/gotrans)
+[![codecov](https://codecov.io/gh/bykovme/gotrans/branch/master/graph/badge.svg)](https://codecov.io/gh/bykovme/gotrans)
 
 # gotrans - localization package for golang
+
 Localization package for GO, it uses JSON files to localize your GO application
 
 ## Getting started
@@ -23,7 +25,15 @@ JSON files should use following format:
 }
 ```
 
-JSON file name should use standard [language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) or language-country code supported by browsers. At least one file "en.json" should be in the localization folder.
+JSON file name should use standard [language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) or language-country code supported by browsers. 
+At least one file "en.json" should be in the localization folder.
+
+The folder content should look like that:
+```
+    en.json
+    de.json
+    ru.json
+```
 
 ### Quick documentation  
 
@@ -50,19 +60,38 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/bykovme/gotrans"
 )
 
+const cHtmlTemplate = `
+<html>
+	<head>
+		<title>%s</title>
+	</head>
+	<body>
+		<h2> %s </h2>
+		%s 
+	</body>
+</html>
+`
+const cGitHubLink = "https://github.com/bykovme/gotrans"
+const cLink = `<a href="%s">%s</a>`
+
 func handler(w http.ResponseWriter, r *http.Request) {
 	lang := gotrans.DetectLanguage(r.Header.Get("Accept-Language"))
-	fmt.Fprintf(w, "<html><head><title> %s </title></head><body>", gotrans.Tr(lang, "hello_world"))
-	fmt.Fprintf(w, "<h2> %s </h2>", gotrans.Tr(lang, "hello_world"))
-	githubLink := "https://github.com/bykovme/gotrans"
-	link := fmt.Sprintf(`<a href="%s">%s</a>`, githubLink, githubLink)
-	fmt.Fprintf(w, gotrans.Tr(lang, "find_more"), link)
-	fmt.Fprint(w, "</body></html>")
+	helloWorld := gotrans.Tr(lang, "hello_world")
+	link := fmt.Sprintf(cLink, cGitHubLink, cGitHubLink)
+	findMore := fmt.Sprintf(gotrans.Tr(lang, "find_more"), link)
+	_, err := fmt.Fprintf(w, cHtmlTemplate,
+		helloWorld,
+		helloWorld,
+		findMore)
+	if err != nil {
+		log.Println(err.Error())
+	}
 }
 
 func main() {
@@ -72,7 +101,7 @@ func main() {
 	}
 
 	http.HandleFunc("/", handler)
-	http.ListenAndServe(":3000", nil)
+	_ = http.ListenAndServe(":3000", nil)
 }
 ```
 
