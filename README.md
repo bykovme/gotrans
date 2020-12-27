@@ -28,6 +28,7 @@ JSON files should use following format:
 
 JSON file name should use standard [language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) or language-country code supported by browsers. 
 At least one file "en.json" should be in the localization folder.
+Initiate the library using the folder with localization files with the function gotrans.InitLocales(), see detailed documentation below
 
 The folder content should look like that:
 ```
@@ -36,25 +37,9 @@ The folder content should look like that:
     ru.json
 ```
 
-### Quick documentation  
-
-There are just 3 functions in the package
-
-#### InitLocales(path string)
-
-Use the relative or absolute path to set the folder where all the JSON files with translations are located. Make sure that all the files with translations have extension ".json"
-
-#### Tr(lang string, key string) string
-
-Get translation value by the language & key 
-
-#### DetectLanguage(acceptLanguage string) string 
-
-This function will be useful when you are creating web application, it detects the language from HTTP header Accept-Language, check the usage of the function in the example below
-
 ## Example of using gotrans package
 
-Simple usage example
+Simple usage example (retrieving translation with a locale and translation key)
 ```go
 package main
 
@@ -70,6 +55,25 @@ func main() {
     fmt.Println(gotrans.Tr("ru", "hello_world"))  // Using russian translation from the file 'ru.json'
 }
 ```
+
+Using default language and shorter function call (retrieving translation without a locale)
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/bykovme/gotrans"
+)
+
+func main() {
+	_ = gotrans.InitLocales("/home/user/project/languages")  //  Path to the folder with localization files     
+	_ = gotrans.SetDefaultLocale("ru") // Setting default locale
+    
+	fmt.Println(gotrans.T("hello_world"))  // Using russian translation from the file 'ru.json'
+}
+```
+
 
 More complicated usage example for dynamic usage on the webserver.
 The same example is located within the package [here](https://github.com/bykovme/gotrans/tree/master/example)
@@ -126,6 +130,65 @@ func main() {
 ## Behaviour
 
 If the key is not found in the localization file, it will try to find the same key in English localization ("en.json"), if the key is not found there as well, the key will be returned instead of value.
+
+## Quick documentation
+
+#### FUNCTIONS
+
+func DetectLanguage(acceptLanguage string) string
+DetectLanguage - parse to find the most preferable language
+
+func GetDefaultLocale() string
+GetDefaultLocale - return current default locale
+
+func GetLocales() []string
+GetLocales - get available locales
+
+func InitLocales(trPath string) error
+InitLocales - initiate locales from the folder.
+
+    Parameters:
+
+    'trPath' - path to the folder with translations files
+
+    Use the relative or absolute path to set the folder where all the JSON files
+    with translations are located. Make sure that all the files with
+    translations have extension ".json".
+
+    Examples:
+
+    err := gotrans.InitLocales("/home/user/project/languages") // absolute path
+
+    err := gotrans.InitLocales("languages") // relative path
+
+func SetDefaultLocale(newLocale string) error
+SetDefaultLocale - set new default locale
+
+func T(trKey string) string
+T - find translation for default locale and provided translation key
+
+
+    Parameters
+
+    'trKey' - translation key from json file
+
+    IMPORTANT! Call gotrans.InitLocale() to initiate translations before calling
+    this function and gotrans.SetDefaultLocale() to set up proper translation
+    lacale (if it is not set then the library will use locale "en")
+
+func Tr(locale string, trKey string) string
+Tr - find translation for provided locale and translation key
+
+
+    Parameters
+
+    'locale' - locale value, for example: "en", "jp", "de", "ru"
+
+    'trKey' - translation key from json file
+
+    IMPORTANT! Call gotrans.InitLocale() to initiate translations before calling
+    this function
+
 
 **[Alex Bykov](https://bykovsoft.com) © 2015 - 2020**
 

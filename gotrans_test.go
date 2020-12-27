@@ -68,6 +68,64 @@ func TestMain(m *testing.M) {
 	os.Exit(retCode)
 }
 
+func TestIfDefaultLocaleIsSeg(t *testing.T) {
+	if GetDefaultLocale() != "en" {
+		t.Errorf("expected %s but retrieved %s", "en", GetDefaultLocale())
+	}
+}
+
+func TestSetDefaultLocale(t *testing.T) {
+	err := SetDefaultLocale("ru")
+	if err != nil {
+		t.Error(err.Error())
+	}
+}
+
+func TestSetWrongDefaultLocale(t *testing.T) {
+	err := SetDefaultLocale("de")
+	if err == nil {
+		t.Errorf("expected error but retrieved nothing")
+	}
+}
+
+func TestIfTranslationsAreNil(t *testing.T) {
+	if trans != nil {
+		trans = nil
+	}
+
+	if T("key") != "" {
+		t.Errorf("expected space but retrieved %s", T("key"))
+	}
+
+	if Tr("en", "key") != "" {
+		t.Errorf("expected space but retrieved %s", T("key"))
+	}
+
+	if GetDefaultLocale() != "" {
+		if Tr("en", "key") != "" {
+			t.Errorf("expected space but retrieved %s", GetDefaultLocale())
+		}
+	}
+
+	errSetLocale := SetDefaultLocale("en")
+	if errSetLocale == nil {
+		t.Errorf("expected error but retrieved nothing")
+	}
+
+	locales := GetLocales()
+	if locales != nil {
+		t.Errorf("expected empty list but retrieved %v", locales)
+	}
+
+	// Recover files load
+	errInit := InitLocales(jsonFilesFolder)
+	if errInit != nil {
+		log.Printf("init failure: %s", errInit.Error())
+		os.Exit(1)
+		return
+	}
+}
+
 func TestEnTranslations(t *testing.T) {
 	enHello := Tr("en", "hello")
 	if enHello != helloWorldValueEn {
@@ -79,6 +137,25 @@ func TestEnTranslations(t *testing.T) {
 	}
 }
 
+func TestAvailableLocales(t *testing.T) {
+	locales := GetLocales()
+	if len(locales) != 2 {
+		t.Error("wrong list length, should be 2")
+	}
+	foundLocales := 0
+	for _, locale := range locales {
+		if locale == "en" {
+			foundLocales++
+		}
+		if locale == "ru" {
+			foundLocales++
+		}
+	}
+	if foundLocales != 2 {
+		t.Error("proper locales were not found")
+	}
+}
+
 func TestRuTranslations(t *testing.T) {
 	ruHello := Tr("ru", "hello")
 	if ruHello != helloWorldValueRu {
@@ -87,6 +164,25 @@ func TestRuTranslations(t *testing.T) {
 	ruTest := Tr("ru", "test")
 	if ruTest != testValueRu {
 		t.Errorf("expected %s but retrieved %s", testValueRu, ruTest)
+	}
+}
+
+func TestDefaultRuTranslations(t *testing.T) {
+	err := SetDefaultLocale("ru")
+	if err != nil {
+		t.Errorf("expected no error but retrieved one: %s", err.Error())
+	}
+	ruHello := T("hello")
+	if ruHello != helloWorldValueRu {
+		t.Errorf("expected %s but retrieved %s", helloWorldValueRu, ruHello)
+	}
+	ruTest := T("test")
+	if ruTest != testValueRu {
+		t.Errorf("expected %s but retrieved %s", testValueRu, ruTest)
+	}
+	errEn := SetDefaultLocale("en")
+	if errEn != nil {
+		t.Errorf("expected no error but retrieved one: %s", errEn.Error())
 	}
 }
 
